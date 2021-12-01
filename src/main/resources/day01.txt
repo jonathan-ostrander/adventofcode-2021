@@ -1,2 +1,0 @@
-some input
-some other input
