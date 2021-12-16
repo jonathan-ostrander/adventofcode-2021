@@ -1,6 +1,6 @@
 package aoc
 
-import scala.collection.mutable.PriorityQueue
+import scala.collection.mutable
 
 object Day15 extends InputReader(15) with Day {
   val smallGrid = input.zipWithIndex.flatMap { case (line, x) =>
@@ -22,13 +22,14 @@ object Day15 extends InputReader(15) with Day {
   }
 
   def dijkstra(grid: Map[(Int, Int), Int]): Int = {
-    val queue = PriorityQueue((0, 0, 0))
+    val queue = mutable.PriorityQueue((0, 0, 0))
+    val visited = mutable.Set.empty[(Int, Int)]
     val target = (grid.map(_._1._1).max, grid.map(_._1._2).max)
 
-    def loop(visited: Set[(Int, Int)]): Int = {
+    def loop(): Int = {
       val next = queue.dequeue()
       if (next._2 == target._1 && next._3 == target._2) -1*next._1
-      else if (visited(next._2 -> next._3)) loop(visited)
+      else if (visited(next._2 -> next._3)) loop()
       else {
         val adjacent = List(-1 -> 0, 1 -> 0, 0 -> -1, 0 -> 1).map {
           case (i, j) => (next._2 + i, next._3 + j)
@@ -37,10 +38,11 @@ object Day15 extends InputReader(15) with Day {
           case _ => None
         }
         queue.addAll(adjacent)
-        loop(visited + (next._2 -> next._3))
+        visited.add(next._2 -> next._3)
+        loop()
       }
     }
-    loop(Set.empty)
+    loop()
   }
 
   override def partOne(): String = dijkstra(smallGrid).toString
