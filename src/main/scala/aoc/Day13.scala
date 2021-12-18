@@ -1,8 +1,10 @@
 package aoc
 
-object Day13 extends InputReader(13) with Day {
+object Day13 extends Day(13) {
   val points =
-    input.takeWhile(!_.isEmpty).map(_.split(",").map(_.toInt).toList).collect { case x :: y :: Nil => x -> y }
+    input.takeWhile(!_.isEmpty).map(_.split(",").map(_.toInt).toList).collect {
+      case x :: y :: Nil => x -> y
+    }
 
   sealed trait Fold {
     def value: Int
@@ -10,7 +12,7 @@ object Day13 extends InputReader(13) with Day {
     def fold(point: (Int, Int)): Option[(Int, Int)] =
       if (point._1 == value) None
       else if (point._1 < value) Some(point)
-      else Some((2*value - point._1) -> point._2)
+      else Some((2 * value - point._1) -> point._2)
 
     def apply(points: List[(Int, Int)]): List[(Int, Int)] = points.flatMap(fold)
   }
@@ -21,10 +23,14 @@ object Day13 extends InputReader(13) with Day {
   }
 
   val folds =
-    input.dropWhile(!_.isEmpty).drop(1).map(_.drop(11).split("=").toList).collect {
-      case "x" :: num :: Nil => X(num.toInt)
-      case "y" :: num :: Nil => Y(num.toInt)
-    }
+    input
+      .dropWhile(!_.isEmpty)
+      .drop(1)
+      .map(_.drop(11).split("=").toList)
+      .collect {
+        case "x" :: num :: Nil => X(num.toInt)
+        case "y" :: num :: Nil => Y(num.toInt)
+      }
 
   implicit class RichPoints(points: List[(Int, Int)]) {
     def print: String = {
@@ -32,9 +38,11 @@ object Day13 extends InputReader(13) with Day {
       val maxY = points.map(_._2).max
 
       val pointSet = points.toSet
-      (0 to maxY).map { y =>
-        (0 to maxX).map(x => if (pointSet(x -> y)) '#' else ' ').mkString
-      }.mkString("\n")
+      (0 to maxY)
+        .map { y =>
+          (0 to maxX).map(x => if (pointSet(x -> y)) '#' else ' ').mkString
+        }
+        .mkString("\n")
     }
   }
 

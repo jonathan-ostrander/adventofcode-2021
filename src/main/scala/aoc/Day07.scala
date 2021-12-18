@@ -1,11 +1,12 @@
 package aoc
 
-object Day07 extends InputReader(7) with Day {
+object Day07 extends Day(7) {
   val crabs = input.head.split(",").map(_.toInt).toList
 
   sealed trait FuelConsumption {
     def singleFuelCost(from: Int, to: Int): Int
-    def totalFuelCost(pos: Int): Int = crabs.map(crab => singleFuelCost(crab, pos)).sum
+    def totalFuelCost(pos: Int): Int =
+      crabs.map(crab => singleFuelCost(crab, pos)).sum
     def minFuelCost: String = (0 to crabs.max).map(totalFuelCost).min.toString
   }
   case object Constant extends FuelConsumption {

@@ -1,6 +1,6 @@
 package aoc
 
-object Day02 extends InputReader(2) with Day {
+object Day02 extends Day(2) {
   case class Submarine(horizontal: Int, depth: Int, aim: Int) {
     def applyCommand(command: Command, correct: Boolean) =
       command.direction match {

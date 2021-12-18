@@ -1,6 +1,6 @@
 package aoc
 
-object Day17 extends InputReader(17) with Day {
+object Day17 extends Day(17) {
   val t = raw"target area: x=(\-?\d+)..(\-?\d+), y=(\-?\d+)..(\-?\d+)".r
   val target: ((Int, Int), (Int, Int)) =
     input.head match {
@@ -29,7 +29,8 @@ object Day17 extends InputReader(17) with Day {
       if (pos._1 > target._1._2 || pos._2 < target._2._1) false
       else if (pos._1.between(target._1) && pos._2.between(target._2)) true
       else {
-        val newXVelocity = if (vel._1 == 0) 0 else if (vel._1 > 0) vel._1 - 1 else vel._1 + 1
+        val newXVelocity =
+          if (vel._1 == 0) 0 else if (vel._1 > 0) vel._1 - 1 else vel._1 + 1
         loop(
           (pos._1 + vel._1, pos._2 + vel._2),
           (newXVelocity, vel._2 - 1)
