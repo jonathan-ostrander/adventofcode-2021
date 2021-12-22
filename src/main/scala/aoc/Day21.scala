@@ -1,9 +1,7 @@
 package aoc
 
 import java.util.concurrent.atomic.AtomicLong
-import scala.collection.concurrent.TrieMap
-import scala.collection.parallel.CollectionConverters._
-import scala.collection.parallel.mutable.ParTrieMap
+import scala.collection.mutable
 
 object Day21 extends Day(21) {
   val startingPlayers = input.map(_.drop(28).toInt -> 0).map(t => Player(t._1, t._2)) match {
@@ -38,13 +36,13 @@ object Day21 extends Day(21) {
     val possibleDiceRolls = for {
       i <- (1 to 3); j <- (1 to 3); k <- (1 to 3)
     } yield i + j + k
-    val rollDistribution = possibleDiceRolls.groupBy(identity).transform { case (_, l) => l.length }.toList.par
+    val rollDistribution = possibleDiceRolls.groupBy(identity).transform { case (_, l) => l.length }.toList
 
-    def winDistribution(state: ParTrieMap[(Player, Player), AtomicLong], soFar: (Long, Long)): Long =
+    def winDistribution(state: mutable.Map[(Player, Player), AtomicLong], soFar: (Long, Long)): Long =
       if (state.isEmpty) soFar._1 max soFar._2
       else {
         val wins = new AtomicLong(soFar._1)
-        val stateMap = TrieMap.empty[(Player, Player), AtomicLong]
+        val stateMap = mutable.Map.empty[(Player, Player), AtomicLong]
 
         rollDistribution.foreach {
           case (roll, numRolls) => state.foreach {
@@ -57,8 +55,8 @@ object Day21 extends Day(21) {
           }
         }
 
-        winDistribution(stateMap.par, (soFar._2, wins.get))
+        winDistribution(stateMap, (soFar._2, wins.get))
       }
-    winDistribution(TrieMap((startingPlayers._1, startingPlayers._2) -> new AtomicLong(1L)).par, (0, 0)).toString
+    winDistribution(mutable.Map((startingPlayers._1, startingPlayers._2) -> new AtomicLong(1L)), (0, 0)).toString
   }
 }
